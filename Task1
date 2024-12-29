@@ -1,0 +1,38 @@
+/* Linear Regression */
+
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
+#Load the dataset
+df=pd.read_csv("Bouston Housing.csv")
+#Preview the Dataset
+print("Preview the Dataset\n")
+print(df.head())
+# Encode categorical data
+label_encoder = LabelEncoder()
+df['Location'] = label_encoder.fit_transform(df['Location'])
+# Separate features and target variable
+X = df[['SquareFootage', 'Bedrooms', 'Bathrooms', 'Location']]
+y = df['Price']
+# Create and train the model
+model = LinearRegression()
+model.fit(X, y)
+# Make predictions
+y_pred = model.predict(X)
+# Visualization
+plt.scatter(df['SquareFootage'], df['Price'], color='blue', label='Actual Price')
+plt.scatter(df['SquareFootage'], y_pred, color='red', label='Predicted Price')
+plt.xlabel('Square Footage')
+plt.ylabel('Price')
+plt.legend()
+plt.title('Linear Regression on Housing Prices')
+plt.show()
+# Display the coefficients
+print(f"Coefficients: {model.coef_}")
+print(f"Intercept: {model.intercept_}")
+# Predicting a new sample
+new_sample = np.array([[3500, 5, 4, label_encoder.transform(['Inside City'])[0]]])
+predicted_price = model.predict(new_sample)
+print(f"Predicted Price for 3500 sqft, 5 bedrooms, 4 bathrooms, inside city: {predicted_price[0]}")
